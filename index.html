@@ -19,6 +19,8 @@
             align-items: center;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             transition: background 0.5s ease-in-out;
+            overflow-y: auto;
+            padding: 20px;
         }
 
         .container {
@@ -29,6 +31,8 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 600px;
+            width: 100%;
         }
 
         h1 {
@@ -45,6 +49,14 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             border: 3px solid white;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
         }
 
         button {
@@ -72,12 +84,23 @@
             box-shadow: 0 2px 10px rgba(245, 87, 108, 0.4);
         }
 
+        .favorite-btn {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            padding: 12px 35px;
+            font-size: 0.95rem;
+        }
+
+        .favorite-btn:hover {
+            box-shadow: 0 6px 20px rgba(250, 112, 154, 0.6);
+        }
+
         .color-display-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .color-code {
@@ -134,19 +157,106 @@
             font-size: 0.8rem;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
+
+        .favorites-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .favorites-title {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .favorites-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .favorite-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .favorite-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .favorite-color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .favorite-color-code {
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .favorite-remove {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .favorite-remove:hover {
+            background: rgba(255, 87, 108, 0.6);
+        }
+
+        .no-favorites {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            font-style: italic;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎨 Color Flipper</h1>
         <div class="color-preview" id="colorPreview"></div>
-        <button onclick="changeColor()">Change Color</button>
+        <div class="button-group">
+            <button onclick="changeColor()">Change Color</button>
+            <button class="favorite-btn" onclick="addToFavorites()">❤️ Favorite</button>
+        </div>
         <div class="color-display-wrapper">
             <div class="color-code" id="colorCode">#667EEA</div>
             <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()">Copy</button>
         </div>
         <p class="info">Click the button to flip to a random color</p>
         <p class="keyboard-hint">⌨️ Press Spacebar for quick color change</p>
+
+        <div class="favorites-section" id="favoritesSection">
+            <div class="favorites-title">⭐ Saved Favorites</div>
+            <div class="favorites-container" id="favoritesContainer">
+                <div class="no-favorites">No favorites yet. Add one!</div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -198,8 +308,68 @@
             copyBtn.textContent = 'Copy';
         }
 
+        function getFavoritesFromStorage() {
+            const favorites = localStorage.getItem('colorFlipperFavorites');
+            return favorites ? JSON.parse(favorites) : [];
+        }
+
+        function saveFavoritesToStorage(favorites) {
+            localStorage.setItem('colorFlipperFavorites', JSON.stringify(favorites));
+        }
+
+        function addToFavorites() {
+            const currentColor = document.getElementById('colorCode').textContent.toLowerCase();
+            const favorites = getFavoritesFromStorage();
+
+            // Check if color is already in favorites
+            if (favorites.includes(currentColor)) {
+                alert('This color is already in your favorites!');
+                return;
+            }
+
+            // Add color to favorites
+            favorites.push(currentColor);
+            saveFavoritesToStorage(favorites);
+            renderFavorites();
+        }
+
+        function removeFromFavorites(color) {
+            let favorites = getFavoritesFromStorage();
+            favorites = favorites.filter(fav => fav !== color.toLowerCase());
+            saveFavoritesToStorage(favorites);
+            renderFavorites();
+        }
+
+        function applyFavoriteColor(color) {
+            document.body.style.background = color;
+            document.getElementById('colorPreview').style.background = color;
+            document.getElementById('colorCode').textContent = color.toUpperCase();
+            resetCopyButton();
+        }
+
+        function renderFavorites() {
+            const favorites = getFavoritesFromStorage();
+            const container = document.getElementById('favoritesContainer');
+
+            if (favorites.length === 0) {
+                container.innerHTML = '<div class="no-favorites">No favorites yet. Add one!</div>';
+                return;
+            }
+
+            container.innerHTML = favorites.map(color => `
+                <div class="favorite-item" onclick="applyFavoriteColor('${color}')">
+                    <div class="favorite-color-preview" style="background-color: ${color};"></div>
+                    <div class="favorite-color-code">${color.toUpperCase()}</div>
+                    <button class="favorite-remove" onclick="event.stopPropagation(); removeFromFavorites('${color}')">✕</button>
+                </div>
+            `).join('');
+        }
+
         // Initialize with the starting color
         document.getElementById('colorPreview').style.background = '#667eea';
+
+        // Load favorites on page load
+        renderFavorites();
 
         // Keyboard shortcuts: Spacebar, Enter to change color
         document.addEventListener('keydown', (event) => {
