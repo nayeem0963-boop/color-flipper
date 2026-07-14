@@ -92,17 +92,26 @@
     </div>
 
     <script>
-        function generateRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
+        // Array of 10 beautiful hex colors
+        const colors = [
+            '#667eea', // Indigo
+            '#764ba2', // Purple
+            '#f093fb', // Pink
+            '#4facfe', // Blue
+            '#00f2fe', // Cyan
+            '#43e97b', // Green
+            '#fa709a', // Coral
+            '#feca57', // Yellow
+            '#ff9a56', // Orange
+            '#a8edea'  // Mint
+        ];
+
+        function getRandomColor() {
+            return colors[Math.floor(Math.random() * colors.length)];
         }
 
         function changeColor() {
-            const randomColor = generateRandomColor();
+            const randomColor = getRandomColor();
             document.body.style.background = randomColor;
             document.getElementById('colorDisplay').textContent = randomColor;
         }
