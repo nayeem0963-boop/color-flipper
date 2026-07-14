@@ -38,16 +38,13 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .color-display {
-            background: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #333;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            font-family: 'Courier New', monospace;
+        .color-preview {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 3px solid white;
         }
 
         button {
@@ -75,9 +72,22 @@
             box-shadow: 0 2px 10px rgba(245, 87, 108, 0.4);
         }
 
+        .color-code {
+            background: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+        }
+
         .info {
             color: white;
-            margin-top: 30px;
+            margin-top: 25px;
             font-size: 0.9rem;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
@@ -86,8 +96,9 @@
 <body>
     <div class="container">
         <h1>🎨 Color Flipper</h1>
-        <div class="color-display" id="colorDisplay">#667EEA</div>
+        <div class="color-preview" id="colorPreview"></div>
         <button onclick="changeColor()">Change Color</button>
+        <div class="color-code" id="colorCode">#667EEA</div>
         <p class="info">Click the button to flip to a random color</p>
     </div>
 
@@ -113,8 +124,12 @@
         function changeColor() {
             const randomColor = getRandomColor();
             document.body.style.background = randomColor;
-            document.getElementById('colorDisplay').textContent = randomColor;
+            document.getElementById('colorPreview').style.background = randomColor;
+            document.getElementById('colorCode').textContent = randomColor.toUpperCase();
         }
+
+        // Initialize with the starting color
+        document.getElementById('colorPreview').style.background = '#667eea';
 
         // Optional: Allow users to press Enter or Space to change color
         document.addEventListener('keydown', (event) => {
