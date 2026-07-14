@@ -127,6 +127,13 @@
             font-size: 0.9rem;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
+
+        .keyboard-hint {
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 15px;
+            font-size: 0.8rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -139,6 +146,7 @@
             <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()">Copy</button>
         </div>
         <p class="info">Click the button to flip to a random color</p>
+        <p class="keyboard-hint">⌨️ Press Spacebar for quick color change</p>
     </div>
 
     <script>
@@ -193,9 +201,12 @@
         // Initialize with the starting color
         document.getElementById('colorPreview').style.background = '#667eea';
 
-        // Optional: Allow users to press Enter or Space to change color
+        // Keyboard shortcuts: Spacebar, Enter to change color
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
+            if (event.code === 'Space') {
+                event.preventDefault(); // Prevent default spacebar behavior (scrolling)
+                changeColor();
+            } else if (event.key === 'Enter') {
                 changeColor();
             }
         });
